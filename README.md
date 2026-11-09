@@ -1,1 +1,0 @@
-# FactoryPulse-FrontEnd
