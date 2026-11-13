@@ -1,5 +1,6 @@
 
 import CartMachine from "../components/CartMachine";
+import PopUp from "../components/PopUp";
 import { useEffect, useState } from "react";
 
 export function SearchBar({ setSearch, setFilter, resetAllFilter }) {
@@ -29,12 +30,26 @@ export default function Machines() {
     const [search, setSearch] = useState("");
     const [filter, setFilter] = useState("");
 
+    const [selectedMachine, setSelectedMachine] = useState(null);
 
     function resetAllFilter() {
         setFilter("");
         setSearch("");
     }
 
+    function handleSave(newStatus) {
+        const updatedMachines = machines.map((machine) => {
+            if (machine.id === selectedMachine.id) {
+                return { ...machine, status: newStatus };
+            }
+            return machine;
+        });
+
+
+        setMachines(updatedMachines);
+        localStorage.setItem("machines", JSON.stringify(updatedMachines));
+        setSelectedMachine(null);
+    }
     useEffect(() => {
         const saveData = localStorage.getItem("machines");
 
@@ -87,10 +102,13 @@ export default function Machines() {
                         } else if (machine.status === "À l'arrêt") {
                             colorBorder = "border-yellow-500";
                         }
-                        return <CartMachine key={machine.id} machine={machine} className={`${colorBorder}`} />
+                        return <CartMachine key={machine.id} machine={machine} className={`${colorBorder}`} onEdit={() => setSelectedMachine(machine)} />
                     })
                 }
             </div>
+            {selectedMachine && (
+                <PopUp key={selectedMachine.id} machine={selectedMachine} onClose={() => setSelectedMachine(null)} onSave={handleSave} />
+            )}
         </>
     );
 }
