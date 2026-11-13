@@ -1,6 +1,7 @@
 
 import CartMachine from "../components/CartMachine";
 import PopUp from "../components/PopUp";
+import PopUpDelete from "../components/PopUpDelete";
 import { useEffect, useState } from "react";
 
 export function SearchBar({ setSearch, setFilter, resetAllFilter }) {
@@ -31,6 +32,7 @@ export default function Machines() {
     const [filter, setFilter] = useState("");
 
     const [selectedMachine, setSelectedMachine] = useState(null);
+    const [machineToDelete, setMachineToDelete] = useState(null);
 
     function resetAllFilter() {
         setFilter("");
@@ -49,6 +51,13 @@ export default function Machines() {
         setMachines(updatedMachines);
         localStorage.setItem("machines", JSON.stringify(updatedMachines));
         setSelectedMachine(null);
+    }
+    function handleDelete(machineDeleted) {
+        const deleteMachine = machines.filter(machine => machine.id !== machineDeleted)
+
+        setMachines(deleteMachine);
+        localStorage.setItem("machines", JSON.stringify(deleteMachine));
+        setMachineToDelete(null);
     }
     useEffect(() => {
         const saveData = localStorage.getItem("machines");
@@ -102,13 +111,14 @@ export default function Machines() {
                         } else if (machine.status === "À l'arrêt") {
                             colorBorder = "border-yellow-500";
                         }
-                        return <CartMachine key={machine.id} machine={machine} className={`${colorBorder}`} onEdit={() => setSelectedMachine(machine)} />
+                        return <CartMachine key={machine.id} machine={machine} className={`${colorBorder}`} onEdit={() => setSelectedMachine(machine)} onDelete={() => setMachineToDelete(machine)} />
                     })
                 }
             </div>
             {selectedMachine && (
                 <PopUp key={selectedMachine.id} machine={selectedMachine} onClose={() => setSelectedMachine(null)} onSave={handleSave} />
             )}
+            {machineToDelete && <PopUpDelete key={machineToDelete.id} machine={machineToDelete}  deleteMachine={handleDelete}/>}
         </>
     );
 }
