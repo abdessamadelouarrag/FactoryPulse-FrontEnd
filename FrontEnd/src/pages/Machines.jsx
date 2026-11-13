@@ -75,7 +75,16 @@ export default function Machines() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 p-5">
                 {
                     filterMachines.map((machine) => {
-                        return <CartMachine key={machine.id} machine={machine}/>
+                        let colorBorder = "";
+
+                        if (machine.status === "En fonctionnement") {
+                            colorBorder = "border-green-500";
+                        } else if (machine.status === "En panne") {
+                            colorBorder = "border-red-500";
+                        } else if (machine.status === "À l'arrêt") {
+                            colorBorder = "border-yellow-500";
+                        }
+                        return <CartMachine key={machine.id} machine={machine} className={`${colorBorder}`} />
                     })
                 }
             </div>
