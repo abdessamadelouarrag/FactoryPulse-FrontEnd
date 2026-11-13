@@ -28,10 +28,20 @@ export default function Machines() {
     const [filter, setFilter] = useState("")
 
     useEffect(() => {
-        fetch("/machines.json")
-            .then((response) => response.json())
-            .then((data) => setMachines(data))
-            .catch((error) => console.error(error));
+        const saveData = localStorage.getItem("machines");
+
+        if(saveData !== null){
+            setMachines(JSON.parse(saveData))
+        }
+        else{
+            fetch("/machines.json")
+                .then((response) => response.json())
+                .then((data) => {
+                    setMachines(data);
+                    localStorage.setItem("machines", JSON.stringify(data))
+                })
+                .catch((error) => console.error(error));
+        }
     }, []);
 
     const filterMachines = machines.filter((machine) => {
