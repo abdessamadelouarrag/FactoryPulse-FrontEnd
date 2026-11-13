@@ -9,6 +9,31 @@ export default function AddMachine() {
         dailyProduction: null
     })
 
+    function handlerNewMachine(e) {
+        e.preventDefault();
+
+        const machines = JSON.parse(localStorage.getItem("machines")) || [];
+
+        const lastId = machines[machines.length - 1]?.id;
+        const takeN = Number(lastId.slice(2))
+        const incId = takeN + 1;
+        const newId = "M-" + String(incId).padStart(3, "0");
+
+        const upData = [...machines, { id : newId, ...newMachine, dailyProduction: Number(newMachine.dailyProduction) }]
+
+        localStorage.setItem("machines", JSON.stringify(upData));
+
+        setNewMachine({
+            name: "",
+            zone: "",
+            status: "",
+            dailyProduction: null
+        })
+
+        alert("vous avez ajouter nv machine")
+    }
+
+    // const addNewMachine = localStorage.setItem("machine", newMachine);
     return (
         <>
             <div className="rounded-x p-6 m-6 rounded-2xl bg-blue-700 shadow-xl">
@@ -45,7 +70,7 @@ export default function AddMachine() {
                     <label htmlFor="dailyProduction">Production Journalière</label>
                     <input type="number" name="dailyProduction" required className="border-2 p-2 border-blue-700 rounded-xl w-80 mt-1 mb-3" placeholder="enter le nom de machine" onChange={(e) => setNewMachine({ ...newMachine, dailyProduction: e.target.value })} />
 
-                    <button className="bg-blue-700 rounded-xl text-amber-50 p-3 cursor-pointer" type="submit">Submit</button>
+                    <button className="bg-blue-700 rounded-xl text-amber-50 p-3 cursor-pointer" type="submit" onClick={handlerNewMachine}>Submit</button>
                 </form>
             </div>
         </>
