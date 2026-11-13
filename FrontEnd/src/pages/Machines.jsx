@@ -2,17 +2,17 @@
 import CartMachine from "../components/CartMachine";
 import { useEffect, useState } from "react";
 
-export function SearchBar({ setSearch, setFilter }) {
+export function SearchBar({ setSearch, setFilter, resetAllFilter }) {
     return (
-        <div className="flex justify-around mb-5">
+        <div className="md:flex md:justify-around mb-5 grid justify-center">
             <div className="flex justify-center items-center gap-5">
                 <h3>Filter Par Nom</h3>
                 <input type="text" placeholder="entre machine you need" className="text-sm border-2 border-blue-700 p-2 rounded-2xl" onChange={(e) => setSearch(e.target.value)} />
-                <button className="bg-blue-700 text-amber-50 p-2 rounded-xl cursor-pointer">Réinitialiser</button>
+                <button className="bg-blue-700 text-amber-50 p-2 rounded-xl cursor-pointer" onClick={resetAllFilter}>Réinitialiser</button>
             </div>
             <div className="flex justify-center items-center gap-5">
                 <h3>Filer Par Status</h3>
-                <select name="status" id="" className="border-2 p-2 border-blue-700 rounded-2xl" onChange={(e)=> setFilter(e.target.value)}>
+                <select name="status" id="" className="border-2 p-2 border-blue-700 rounded-2xl" onChange={(e) => setFilter(e.target.value)}>
                     <option value="">--acune--</option>
                     <option value="En fonctionnement">En fonctionnement</option>
                     <option value="En panne">En panne</option>
@@ -22,10 +22,18 @@ export function SearchBar({ setSearch, setFilter }) {
         </div>
     )
 }
+
+
 export default function Machines() {
     const [machines, setMachines] = useState([]);
     const [search, setSearch] = useState("");
-    const [filter, setFilter] = useState("")
+    const [filter, setFilter] = useState("");
+
+
+    function resetAllFilter() {
+        setFilter("");
+        setSearch("");
+    }
 
     useEffect(() => {
         const saveData = localStorage.getItem("machines");
@@ -45,29 +53,24 @@ export default function Machines() {
     }, []);
 
     const filterMachines = machines.filter((machine) => {
-       const filerName =  machine.name.toLowerCase().includes(search.toLowerCase())
-       const filterStatus = filter == "" || machine.status === filter
+        const filerName = machine.name.toLowerCase().includes(search.toLowerCase())
+        const filterStatus = filter == "" || machine.status === filter
 
-       return filerName && filterStatus 
+        return filerName && filterStatus
     })
 
-    // let colorBorder = "";
-
-    // if(filterMachines.filterStatus == "En fonctionnement"){
-    //     colorBorder = "#ff0000"
-    // }
     return (
         <>
-            <div className="rounded-x p-6 m-6 rounded-2xl shadow-xl border-b-4 border-b-blue-600">
-                <h1 className="text-3xl font-bold text-blue-700">
+            <div className="rounded-x p-6 m-6 rounded-2xl shadow-xl bg-blue-700">
+                <h1 className="text-3xl font-bold text-white">
                     List Machines
                 </h1>
 
-                <p className="mt-2 font-ex text-blue-700/70">
+                <p className="mt-2 font-ex text-white/50">
                     total des machine dans platform
                 </p>
             </div>
-            <SearchBar  setSearch={setSearch} setFilter={setFilter}/>
+            <SearchBar setSearch={setSearch} setFilter={setFilter} resetAllFilter={resetAllFilter} />
 
             {filterMachines.length == 0 && (<h2 className="flex justify-center text-red-600">Aucun Resultat !</h2>)}
 
